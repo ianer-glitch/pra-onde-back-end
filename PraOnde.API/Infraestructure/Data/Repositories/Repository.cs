@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PraOnde.API.Infraestructure.Data.Repositories;
 
-public class Repository<T> where T: class , IRepository<T>
+public class Repository<T> : IRepository<T> where T : class
 {
     private readonly Context _context;
     public Repository(Context context)

@@ -1,6 +1,6 @@
 namespace PraOnde.API.Domain.Entities;
 
-public class Pin
+public class Pin : BaseEntity
 {
     public Pin()
     {
