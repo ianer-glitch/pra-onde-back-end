@@ -1,0 +1,7 @@
+﻿services:
+  praonde.api:
+    image: praonde.api
+    build:
+      context: .
+      dockerfile: PraOnde.API/Dockerfile
+
