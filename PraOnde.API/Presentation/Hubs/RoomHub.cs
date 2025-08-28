@@ -5,12 +5,12 @@ namespace PraOnde.API.Presentation.Hubs;
 
 public class RoomHub : Hub , IRoomHub
 {
-    private readonly IHubContext _hubContext;   
-    private readonly IJoinRoomUseCase  _joinRoomUseCase;
-    public RoomHub(IHubContext hubContext, IJoinRoomUseCase joinRoomUseCase)
+    private readonly IHubContext<RoomHub> _hubContext;   
+    
+    public RoomHub(IHubContext<RoomHub>  hubContext)
     {
         _hubContext = hubContext;
-        _joinRoomUseCase = joinRoomUseCase;
+        
     }
 
     private async Task SendMessageExample(Guid userId, string message)
@@ -31,15 +31,15 @@ public class RoomHub : Hub , IRoomHub
 
     public async Task JoinRoom(Guid roomId, Guid userId)
     {
-        var result = await _joinRoomUseCase.ExecuteAsync(new JoinRoomUseCaseIn
-        {
-            RoomId = roomId,
-            UserId = userId
-        });
-
-        await Groups.AddToGroupAsync(Context.ConnectionId, result.RoomId.ToString());
-        
-        await Clients.Group(roomId.ToString()).SendAsync("UserJoined", result.Username);
+        // var result = await _joinRoomUseCase.ExecuteAsync(new JoinRoomUseCaseIn
+        // {
+        //     RoomId = roomId,
+        //     UserId = userId
+        // });
+        //
+        // await Groups.AddToGroupAsync(Context.ConnectionId, result.RoomId.ToString());
+        //
+        // await Clients.Group(roomId.ToString()).SendAsync("UserJoined", result.Username);
         
     }
 

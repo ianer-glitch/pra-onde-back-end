@@ -15,6 +15,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<Context>(o => o.UseInMemoryDatabase(("praOndeDb")));
 
+
+builder.Services.AddSignalR();
 builder.Services.AddSingleton<IRoomHub, RoomHub>();
 
 builder.Services.AddScoped<IJoinRoomUseCase, JoinRoomUseCase>();
