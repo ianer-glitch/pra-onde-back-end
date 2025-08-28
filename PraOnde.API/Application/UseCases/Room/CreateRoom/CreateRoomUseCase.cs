@@ -1,3 +1,6 @@
+using FluentValidation;
+using PraOnde.API.Application.Common;
+using PraOnde.API.Domain.Exceptions;
 using PraOnde.API.Infraestructure.Data;
 
 namespace PraOnde.API.Application.UseCases.Room.CreateRoom;
@@ -6,38 +9,55 @@ public class CreateRoomUseCase : ICreateRoomUseCase
 {
     private readonly ILogger<CreateRoomUseCaseIn> _logger;
     private readonly Context _context;
+    private Guid _logContextId = Guid.NewGuid();
     public CreateRoomUseCase(ILogger<CreateRoomUseCaseIn> logger, Context context)
     {
         _logger = logger;
         _context = context;
     }
-    public async Task<CreateRoomUseCaseOut> ExecuteAsync(CreateRoomUseCaseIn request)
+    public async Task<Result<CreateRoomUseCaseOut>> ExecuteAsync(CreateRoomUseCaseIn request)
     {
         try
         {
+            _logger.LogInformation($"[CreateRoomUseCase] Initializing for Room {request.RoomName}");
+
+            var validator = new CreateRoomUseCaseValidator();
+            await validator.ValidateAndThrowAsync(request);
+
             var room = _context.Rooms.FirstOrDefault(r => r.Name == request.RoomName);
             if (room != null)
             {
-                //AlreadyExistException
-                throw new Exception();
+                _logger.LogWarning($"[CreateRoomUseCase] Room with name {request.RoomName} already exists");
+                throw new RoomAlreadyExistException();
             }
 
-           await _context.Rooms.AddAsync(new Domain.Entities.Room(request.RoomName));
-           if (await _context.SaveChangesAsync() > 0)
-           {
-               //Result.SetSucces()
-               return new CreateRoomUseCaseOut
-               {
-                   RoomId = room.Id
-               };
-           }
+            await _context.Rooms.AddAsync(new Domain.Entities.Room(request.RoomName));
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                _logger.LogInformation($"[CreateRoomUseCase] Room {request.RoomName} was successfully created");
+                return Result<CreateRoomUseCaseOut>.Success(new CreateRoomUseCaseOut
+                {
+                    RoomId = room.Id
+                });
+            }
 
-           throw new Exception();
+            _logger.LogInformation($"[CreateRoomUseCase] Room {request.RoomName} could not be created");
+            throw new Exception($"[CreateRoomUseCase] Room {request.RoomName} could not be created");
+        }
+        catch (RoomAlreadyExistException e)
+        {
+            _logger.LogError($"[CreateRoomUseCase]{e.Message},Exception: {e.Message},InnerException: {e.InnerException}");
+            return Result<CreateRoomUseCaseOut>.Fail("Uma sala com esse nome já existe");
+        }
+        catch (ValidationException e)
+        {
+            _logger.LogError($"[CreateRoomUseCase]{e.Message},Exception: {e.Message},InnerException: {e.InnerException}");
+            return Result<CreateRoomUseCaseOut>.Fail($"{e.Message}");
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
-            throw;
+            _logger.LogError(e.Message);
+            return Result<CreateRoomUseCaseOut>.Fail($"Houve um erro desconhecido!, informe o código {_logContextId} ao administrador");
         }
     }
 }
