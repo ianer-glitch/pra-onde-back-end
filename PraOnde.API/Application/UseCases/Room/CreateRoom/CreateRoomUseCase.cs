@@ -2,18 +2,19 @@ using FluentValidation;
 using PraOnde.API.Application.Common;
 using PraOnde.API.Domain.Exceptions;
 using PraOnde.API.Infraestructure.Data;
+using PraOnde.API.Infraestructure.Data.Repositories;
 
 namespace PraOnde.API.Application.UseCases.Room.CreateRoom;
 
 public class CreateRoomUseCase : ICreateRoomUseCase
 {
     private readonly ILogger<CreateRoomUseCaseIn> _logger;
-    private readonly Context _context;
+    private readonly IRepository<Domain.Entities.Room> _roomRepository;
     private Guid _logContextId = Guid.NewGuid();
-    public CreateRoomUseCase(ILogger<CreateRoomUseCaseIn> logger, Context context)
+    public CreateRoomUseCase(ILogger<CreateRoomUseCaseIn> logger, IRepository<Domain.Entities.Room> roomRepository)
     {
         _logger = logger;
-        _context = context;
+        _roomRepository = roomRepository;
     }
     public async Task<Result<CreateRoomUseCaseOut>> ExecuteAsync(CreateRoomUseCaseIn request)
     {
@@ -24,15 +25,15 @@ public class CreateRoomUseCase : ICreateRoomUseCase
             var validator = new CreateRoomUseCaseValidator();
             await validator.ValidateAndThrowAsync(request);
 
-            var room = _context.Rooms.FirstOrDefault(r => r.Name == request.RoomName);
+            var room = await _roomRepository.FirstOrDefaultAsync(r => r.Name == request.RoomName);
             if (room != null)
             {
                 _logger.LogWarning($"[CreateRoomUseCase] Room with name {request.RoomName} already exists");
                 throw new RoomAlreadyExistException();
             }
 
-            await _context.Rooms.AddAsync(new Domain.Entities.Room(request.RoomName));
-            if (await _context.SaveChangesAsync() > 0)
+            await _roomRepository.AddAsync(new Domain.Entities.Room(request.RoomName));
+            if (await _roomRepository.SaveChangesAsync() > 0)
             {
                 _logger.LogInformation($"[CreateRoomUseCase] Room {request.RoomName} was successfully created");
                 return Result<CreateRoomUseCaseOut>.Success(new CreateRoomUseCaseOut
