@@ -29,8 +29,9 @@ public class RoomHub : Hub , IRoomHub
         throw new NotImplementedException();
     }
 
-    public async Task JoinRoom(Guid roomId, Guid userId)
+    public async Task JoinRoom(JoinRoomUseCaseIn request)
     {
+        var a = 10;
         // var result = await _joinRoomUseCase.ExecuteAsync(new JoinRoomUseCaseIn
         // {
         //     RoomId = roomId,
@@ -40,7 +41,7 @@ public class RoomHub : Hub , IRoomHub
         // await Groups.AddToGroupAsync(Context.ConnectionId, result.RoomId.ToString());
         //
         // await Clients.Group(roomId.ToString()).SendAsync("UserJoined", result.Username);
-        
+
     }
 
     public Task LeaveRoom(Guid roomId, Guid userId)

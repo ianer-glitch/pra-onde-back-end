@@ -15,6 +15,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();   // logs to terminal
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
 builder.Services.AddDbContext<Context>(o => o.UseInMemoryDatabase(("praOndeDb")));
 
 
@@ -29,6 +33,14 @@ builder.Services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
+{
+    p.AllowCredentials();
+    p.AllowAnyHeader();
+    p.AllowAnyMethod();
+    p.WithOrigins("http://localhost:3000");
+}));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,12 +50,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
+app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapHub<RoomHub>("/messageHub");
+app.MapHub<RoomHub>("hubs/room");
 
 app.Run();
