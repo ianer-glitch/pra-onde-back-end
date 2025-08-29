@@ -9,7 +9,7 @@ public class Room : BaseEntity
 
     public Room(string name)
     {
-        
+        SetName(name);
     }
     
     public string Name { get; set; }

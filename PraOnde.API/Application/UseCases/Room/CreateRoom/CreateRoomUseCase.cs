@@ -32,13 +32,14 @@ public class CreateRoomUseCase : ICreateRoomUseCase
                 throw new RoomAlreadyExistException();
             }
 
-            await _roomRepository.AddAsync(new Domain.Entities.Room(request.RoomName));
+            var newRoom = new Domain.Entities.Room(request.RoomName);
+            await _roomRepository.AddAsync(newRoom);
             if (await _roomRepository.SaveChangesAsync() > 0)
             {
                 _logger.LogInformation($"[CreateRoomUseCase] Room {request.RoomName} was successfully created");
                 return Result<CreateRoomUseCaseOut>.Success(new CreateRoomUseCaseOut
                 {
-                    RoomId = room.Id
+                    RoomId = newRoom.Id
                 });
             }
 
