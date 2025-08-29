@@ -16,7 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Logging.ClearProviders();
-builder.Logging.AddConsole();   // logs to terminal
+builder.Logging.AddConsole();   
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 builder.Services.AddDbContext<Context>(o => o.UseInMemoryDatabase(("praOndeDb")));

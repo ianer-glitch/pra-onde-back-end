@@ -5,12 +5,13 @@ namespace PraOnde.API.Presentation.Hubs;
 
 public class RoomHub : Hub , IRoomHub
 {
-    private readonly IHubContext<RoomHub> _hubContext;   
+    private readonly IHubContext<RoomHub> _hubContext;  
+    private readonly IServiceProvider _serviceProvider; 
     
-    public RoomHub(IHubContext<RoomHub>  hubContext)
+    public RoomHub(IHubContext<RoomHub>  hubContext, IServiceProvider serviceProvider)
     {
         _hubContext = hubContext;
-        
+        _serviceProvider = serviceProvider;
     }
 
     private async Task SendMessageExample(Guid userId, string message)
@@ -31,17 +32,14 @@ public class RoomHub : Hub , IRoomHub
 
     public async Task JoinRoom(JoinRoomUseCaseIn request)
     {
-        var a = 10;
-        // var result = await _joinRoomUseCase.ExecuteAsync(new JoinRoomUseCaseIn
-        // {
-        //     RoomId = roomId,
-        //     UserId = userId
-        // });
-        //
-        // await Groups.AddToGroupAsync(Context.ConnectionId, result.RoomId.ToString());
-        //
-        // await Clients.Group(roomId.ToString()).SendAsync("UserJoined", result.Username);
-
+        var scope =  _serviceProvider.CreateScope();
+        var joinUseCase = scope.ServiceProvider.GetRequiredService<IJoinRoomUseCase>();
+        var result = await joinUseCase.ExecuteAsync(request);
+        
+        await Groups.AddToGroupAsync(Context.ConnectionId, result.RoomId.ToString());
+        
+        await Clients.Group(result.RoomId.ToString()).SendAsync("UserJoined", result.Username);
+        scope.Dispose();
     }
 
     public Task LeaveRoom(Guid roomId, Guid userId)
