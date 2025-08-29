@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PraOnde.API.Application.UseCases.Room.CreateRoom;
 using PraOnde.API.Application.UseCases.Room.JoinRoom;
+using PraOnde.API.Application.UseCases.User.CreateUser;
 using PraOnde.API.Infraestructure.Data;
 using PraOnde.API.Infraestructure.Data.Repositories;
 using PraOnde.API.Presentation.Hubs;
@@ -20,8 +21,12 @@ builder.Services.AddDbContext<Context>(o => o.UseInMemoryDatabase(("praOndeDb"))
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IRoomHub, RoomHub>();
 
+#region  UseCases
 builder.Services.AddScoped<IJoinRoomUseCase, JoinRoomUseCase>();
 builder.Services.AddScoped<ICreateRoomUseCase, CreateRoomUseCase>();
+builder.Services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
+#endregion
+
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
 var app = builder.Build();
