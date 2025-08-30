@@ -32,7 +32,7 @@ public class CreateUserUseCaseTests
         Assert.NotNull(result.Value);
     }
 
-    [Fact] public async Task WhenNameHasAlreadyBeenRegistered_ShoudThrowUserAlreadyExistsException()
+    [Fact] public async Task WhenNameHasAlreadyBeenRegistered_ShouldReturnFail()
     {
         var username = "existingUser";
         var existingUser = new API.Domain.Entities.User(username);
