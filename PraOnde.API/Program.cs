@@ -4,6 +4,7 @@ using PraOnde.API.Application.UseCases.Room.JoinRoom;
 using PraOnde.API.Application.UseCases.User.CreateUser;
 using PraOnde.API.Infraestructure.Data;
 using PraOnde.API.Infraestructure.Data.Repositories;
+using PraOnde.API.Infraestructure.Data.UnitOfWork;
 using PraOnde.API.Presentation.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +32,10 @@ builder.Services.AddScoped<ICreateRoomUseCase, CreateRoomUseCase>();
 builder.Services.AddScoped<ICreateUserUseCase, CreateUserUseCase>();
 #endregion
 
+#region  Repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+#endregion
 
 builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
 {
