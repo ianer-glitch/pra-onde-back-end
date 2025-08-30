@@ -6,25 +6,19 @@ A ideia é simples: usuários se conectam em uma sala, podem trocar ideias por m
 ## Tecnologias:
 
 - .NET 8.0
-
 - Banco de dados em memória
-
 - Fluent Validation
-
 - xUnit
-
 - Arquitetura Limpa
 
 ## Padrões:
 
 - Command Pattern
-
 - Result Pattern
-
 - Repository Pattern
-
 - RESTful
 - DDD
+- UnitOfWork
 
 ### Links
 - Design Conceito : https://www.figma.com/design/37YCjwdqBsEIgzcW4fNVal/Conceito?node-id=0-1&p=f&t=09JDICJiWt81cfkm-0 
@@ -32,4 +26,4 @@ A ideia é simples: usuários se conectam em uma sala, podem trocar ideias por m
 - Diagrama do banco de dados:  https://www.figma.com/board/QHoB8iyrI5x7NZYXyH2Q14/Class-Diagram-Template--Community-?node-id=0-1&t=WH7UmwuJe2X5JmWC-1
 
 #### Exemplo mais recente
-- CreateRoomUseCase
+- CreateUserUseCase
