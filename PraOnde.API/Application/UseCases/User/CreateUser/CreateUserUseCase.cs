@@ -37,7 +37,7 @@ public class CreateUserUseCase : ICreateUserUseCase
 
             var newUser = new Domain.Entities.User(req.Username);
 
-            await _uow.BeginTransactionAsync();
+            
             
             await _uow.UserRepository.AddAsync(newUser);
 
@@ -54,19 +54,19 @@ public class CreateUserUseCase : ICreateUserUseCase
         }
         catch (UserAlreadyExistException ex)
         {
-            await _uow.RollbackAsync();
+            
             _logger.LogError($"[CreateUserUseCase] {ex.Message},  stack trace: {ex.StackTrace}");
             return Result<CreateUserUseCaseOut>.Fail($"Já existe um usuário cadastrado com o nome {req.Username}");
         }
         catch (ValidationException ex)
         {
-            await _uow.RollbackAsync();
+            
             _logger.LogError($"[CreateUserUseCase] {ex.Message},  stack trace: {ex.StackTrace}");
             return Result<CreateUserUseCaseOut>.Fail(ex.Message);
         }
         catch (Exception ex)
         {
-            await _uow.RollbackAsync();
+            
             _logger.LogError(
                 $"[CreateUserUseCase] Ocurred an error while attempting to create a new user: {ex.Message},  stack trace: {ex.StackTrace}");
             return Result<CreateUserUseCaseOut>.Fail("Ocorreu um erro desconhecido e não foi possível criar o usuário");

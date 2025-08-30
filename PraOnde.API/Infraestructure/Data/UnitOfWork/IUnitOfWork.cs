@@ -8,7 +8,5 @@ public interface IUnitOfWork
 {
     IRepository<User> UserRepository { get; }
     IRepository<Room> RoomRepository { get; }
-    Task<IDbContextTransaction> BeginTransactionAsync();
     Task<int> CommitAsync();
-    Task RollbackAsync();
 }
