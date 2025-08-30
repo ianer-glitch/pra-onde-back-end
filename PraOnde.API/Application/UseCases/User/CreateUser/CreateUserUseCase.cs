@@ -32,7 +32,7 @@ public class CreateUserUseCase : ICreateUserUseCase
             {
                 _logger.LogInformation(
                     $"[CreateUserUseCase] Could not  create user {req.Username}, There's already a user with that name");
-                throw new UserAlreadyExistException();
+                throw new UserAlreadyExistException(req.Username);
             }
 
             var newUser = new Domain.Entities.User(req.Username);
